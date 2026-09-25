@@ -1,0 +1,25 @@
+{
+  "name": "@fleet/continuous-capsule",
+  "version": "0.1.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "docs"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "generate:profile": "node scripts/generate-profile.mjs",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "packageManager": "pnpm@12.3.4"
+}
