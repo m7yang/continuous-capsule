@@ -20,3 +20,8 @@ export declare const profileId: 'swiftui-macos-27.0-26A428';
 export declare function createCapsuleGeometry(options: CapsuleOptions): CapsuleGeometry | null;
 export declare function createCapsuleGeometry(options: CapsuleOptions<false> & { includeFocus: false }): CapsuleSurfaceGeometry | null;
 export declare function createCapsuleGeometry(options: CapsuleOptions<boolean>): CapsuleSurfaceGeometry | CapsuleGeometry | null;
+
+export type ContinuousRectangleOptions<IncludeFocus extends boolean = true> = CapsuleOptions<IncludeFocus> & { radius: number };
+export declare function createContinuousRectangleGeometry(options: ContinuousRectangleOptions): CapsuleGeometry | null;
+export declare function createContinuousRectangleGeometry(options: ContinuousRectangleOptions<false> & { includeFocus: false }): CapsuleSurfaceGeometry | null;
+export declare function createContinuousRectangleGeometry(options: ContinuousRectangleOptions<boolean>): CapsuleSurfaceGeometry | CapsuleGeometry | null;

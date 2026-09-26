@@ -83,3 +83,18 @@ Record its version, source provenance, and checksum in the consumer.
 
 The tarball includes runtime source, declarations, and documentation. Native
 fixtures and the Swift exporter stay in this repository for maintenance.
+
+## Continuous rectangles (0.2.0)
+
+`createContinuousRectangleGeometry({ width, height, radius, ...options })` uses
+SwiftUI continuous rounded-rectangle geometry. It shares the capsule border,
+focus, surface-only options and return shape, but supports all positive aspect
+ratios. Radius is measured on the inset stroke centerline and clamps to half its
+shortest dimension. Zero radius produces a rectangle with a square focus ring
+that preserves the requested clear gap at its sides and corners. Existing capsule
+output is unchanged. Curved focus rings use an approximate parallel offset;
+neither focus treatment is an exported native focus effect.
+
+The generator matches 561 independent native holdouts within 0.0002 CSS pixels
+per control point on macOS 27.0 build 26A428. This pins one SwiftUI profile;
+it does not promise every Apple control or future OS has this contour.
