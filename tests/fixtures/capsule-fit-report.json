@@ -1,0 +1,168 @@
+{
+  "captured" : "2026-09-26T06:15:02Z",
+  "os" : "Version 27.0 (Build 26A428)",
+  "results" : [
+    {
+      "after" : 0.076687761334522264,
+      "before" : 0.30866659533097618,
+      "height" : 150,
+      "id" : "0",
+      "role" : "calibration",
+      "scale" : 2,
+      "width" : 332
+    },
+    {
+      "after" : 0.087537267540159114,
+      "before" : 0.2732335154758978,
+      "height" : 150,
+      "id" : "0",
+      "role" : "calibration",
+      "scale" : 16,
+      "width" : 332
+    },
+    {
+      "after" : 0.053767363139966662,
+      "before" : 0.14854510240280749,
+      "height" : 26.25,
+      "id" : "1",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 300
+    },
+    {
+      "after" : 0.010987084384798784,
+      "before" : 0.052055391377958671,
+      "height" : 26.25,
+      "id" : "1",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 300
+    },
+    {
+      "after" : 0.091416048871179711,
+      "before" : 0.12112114611085634,
+      "height" : 30,
+      "id" : "2",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 96
+    },
+    {
+      "after" : 0.01065558724121729,
+      "before" : 0.057325955652952842,
+      "height" : 30,
+      "id" : "2",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 96
+    },
+    {
+      "after" : 0.1082198069690512,
+      "before" : 0.090591988242103128,
+      "height" : 24,
+      "id" : "3",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 180
+    },
+    {
+      "after" : 0.0098640403519887343,
+      "before" : 0.0472531406704082,
+      "height" : 24,
+      "id" : "3",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 180
+    },
+    {
+      "after" : 0.061111628372784388,
+      "before" : 0.15366918835628951,
+      "height" : 34,
+      "id" : "4",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 250
+    },
+    {
+      "after" : 0.011587420148125194,
+      "before" : 0.065049305199608831,
+      "height" : 34,
+      "id" : "4",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 250
+    },
+    {
+      "after" : 0.083871139109902959,
+      "before" : 0.11868465221854407,
+      "height" : 40,
+      "id" : "5",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 80
+    },
+    {
+      "after" : 0.017449748351250571,
+      "before" : 0.077181871964758564,
+      "height" : 40,
+      "id" : "5",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 80
+    },
+    {
+      "after" : 0.02933829252109188,
+      "before" : 0.12244068870513303,
+      "height" : 31.375,
+      "id" : "6",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 125.375
+    },
+    {
+      "after" : 0.010687005714027809,
+      "before" : 0.061279408668326596,
+      "height" : 31.375,
+      "id" : "6",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 125.375
+    },
+    {
+      "after" : 0.082354346747097296,
+      "before" : 0.15319482267581819,
+      "height" : 64,
+      "id" : "7",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 512
+    },
+    {
+      "after" : 0.03574320580301138,
+      "before" : 0.11923335305432481,
+      "height" : 64,
+      "id" : "7",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 512
+    },
+    {
+      "after" : 0.078116439654113634,
+      "before" : 0.16083024965960213,
+      "height" : 63.5,
+      "id" : "8",
+      "role" : "holdout",
+      "scale" : 2,
+      "width" : 210.5
+    },
+    {
+      "after" : 0.035743205803011602,
+      "before" : 0.11826736030171148,
+      "height" : 63.5,
+      "id" : "8",
+      "role" : "holdout",
+      "scale" : 16,
+      "width" : 210.5
+    }
+  ]
+}

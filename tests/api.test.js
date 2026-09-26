@@ -4,14 +4,10 @@ import { readFileSync } from 'node:fs';
 import { createCapsuleGeometry, profileId } from '@fleet/continuous-capsule';
 import { profile } from '../src/profile.js';
 
-test('runtime profile retains the native fixture and provenance', () => {
-  const fixture = JSON.parse(
-    readFileSync(new URL('./fixtures/apple-capsules.json', import.meta.url), 'utf8'),
-  );
-  const { width, height, continuous } = fixture.samples[0];
-  assert.deepEqual(profile, { width, height, continuous });
-  assert.equal(fixture.os, 'Version 27.0 (Build 26A428)');
-  assert.equal(profileId, 'swiftui-macos-27.0-26A428');
+test('runtime profile identifies the frozen native-render fit', () => {
+  assert.equal(profile.width, 2);
+  assert.equal(profile.height, 1);
+  assert.equal(profileId, 'swiftui-macos-27.0-26A428-render-fit-v1');
 });
 
 test('public API imports without DOM or React and produces independent results', () => {
@@ -22,7 +18,7 @@ test('public API imports without DOM or React and produces independent results',
   first.surfacePath = 'changed';
   assert.notEqual(first.surfacePath, second.surfacePath);
   assert.equal(second.inset, 0.5);
-  assert.equal((second.surfacePath.match(/C/g) ?? []).length, 12);
+  assert.equal((second.surfacePath.match(/C/g) ?? []).length, 24);
 });
 
 test('invalid and unsupported geometry uses the fallback', () => {

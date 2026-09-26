@@ -3,45 +3,72 @@ import { readFileSync } from 'node:fs';
 import { appleCapsuleCommands, appleCapsulePath } from '../src/native-capsule.js';
 import { offsetFocusPath } from '../src/focus-offset.js';
 import { createCapsuleGeometry } from '../src/index.js';
-const samples = ['apple-capsules.json', 'apple-compact-capsules.json'].flatMap((name) => {
-  const fixture = JSON.parse(readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8'));
-  assert.equal(fixture.os, 'Version 27.0 (Build 26A428)');
-  return fixture.samples;
-});
+// Frozen prototype paths are independent of the runtime profile generator.
+const samples = JSON.parse(readFileSync(
+  new URL('./fixtures/capsule-fit-cases.json', import.meta.url), 'utf8',
+)).map(sample => ({ ...sample, continuous: sample.fitted }));
+function curves(commands) {
+  const result = [];
+  let current;
+  for (const { type, points } of commands) {
+    if (type === 'C') result.push([current, points.slice(0, 2), points.slice(2, 4), points.slice(4)]);
+    if (points.length) current = points.slice(-2);
+  }
+  return result;
+}
+function evaluate([a, b, c, d], t) {
+  const u = 1 - t;
+  return [0, 1].map(i => u ** 3 * a[i] + 3 * u ** 2 * t * b[i] + 3 * u * t ** 2 * c[i] + t ** 3 * d[i]);
+}
 let maximumError = 0;
 for (const sample of samples) {
   const actual = appleCapsuleCommands(sample.width, sample.height);
-  assert.equal(actual.length, sample.continuous.length);
-  assert.equal(actual.filter((command) => command.type === 'C').length, 12);
-  actual.forEach((command, index) => {
-    const expected = sample.continuous[index];
-    assert.equal(command.type, expected.type);
-    assert.equal(command.points.length, expected.points.length);
-    command.points.forEach((value, point) => {
-      const error = Math.abs(value - expected.points[point]);
-      maximumError = Math.max(maximumError, error);
-      assert.ok(
-        Number.isFinite(value) && error < 1e-9,
-        `${sample.width}×${sample.height}: error ${error}`,
-      );
-    });
-  });
-  assert.equal(JSON.stringify(sample.continuous), JSON.stringify(sample.roundedRectangle));
-  // Exercise the public, serialized borderless surface used by compact badges,
-  // not only the internal control-point scaler.
+  assert.equal(actual.filter((command) => command.type === 'C').length, 24);
+  const edges = [];
+  let current, first;
+  for (const { type, points } of actual) {
+    if (type === 'M') { current = first = points; continue; }
+    const end = type === 'Z' ? first : points.slice(-2);
+    const startTangent = (type === 'C' ? points.slice(0, 2) : end).map((n, i) => n - current[i]);
+    const endTangent = end.map((n, i) => n - (type === 'C' ? points.slice(2, 4) : current)[i]);
+    if (Math.hypot(...startTangent) > 1e-9) edges.push([startTangent, endTangent]);
+    assert.ok(points.every((n, i) => n >= 0 && n <= (i % 2 ? sample.height : sample.width)));
+    current = end;
+  }
+  for (let i = 0; i < edges.length; i++) {
+    const a = edges[i][1], b = edges[(i + 1) % edges.length][0];
+    const magnitude = Math.hypot(...a) * Math.hypot(...b);
+    assert.ok(Math.abs(a[0] * b[1] - a[1] * b[0]) / magnitude < 1e-10);
+    assert.ok(a[0] * b[0] + a[1] * b[1] > 0);
+  }
+  // Compare sampled curve positions against the unsplit frozen prototype.
+  // Runtime cubics are exact halves, not newly fitted control points.
+  const expectedCurves = curves(sample.continuous);
   const { surfacePath, inset } = createCapsuleGeometry({ ...sample, borderWidth: 0 });
   assert.equal(inset, 0);
-  const serialized = surfacePath.match(/-?\d+\.?\d*/g).map(Number);
-  const native = sample.continuous.flatMap(({ points }) => points);
-  assert.equal(serialized.length, native.length);
-  serialized.forEach((value, i) => assert.ok(Math.abs(value - native[i]) < 1e-9));
+  const serialized = [...surfacePath.matchAll(/([MLCZ])([^MLCZ]*)/g)].map(([, type, values]) => ({
+    type, points: (values.match(/-?\d*\.?\d+(?:e[-+]?\d+)?/gi) ?? []).map(Number),
+  }));
+  for (const commands of [actual, serialized]) {
+    const actualCurves = curves(commands);
+    assert.equal(actualCurves.length, expectedCurves.length * 2);
+    actualCurves.forEach((curve, i) => {
+      for (let step = 0; step <= 40; step++) {
+        const p = evaluate(curve, step / 40);
+        const expected = evaluate(expectedCurves[Math.floor(i / 2)], ((i % 2) + step / 40) / 2);
+        const error = Math.hypot(p[0] - expected[0], p[1] - expected[1]);
+        maximumError = Math.max(maximumError, error);
+        assert.ok(error < 1e-9, `${sample.width}×${sample.height}: curve error ${error}`);
+      }
+    });
+  }
 }
 assert.throws(() => appleCapsuleCommands(30, 30), /width \/ height/);
 console.log(
-  `${samples.length} native sizes verified; maximum control-point error: ${maximumError} px.`,
+  `${samples.length} fitted sizes verified; maximum sampled frozen-fit curve error: ${maximumError} px.`,
 );
 
-// Independently sample the native fixture with de Casteljau subdivision, then
+// Independently sample the frozen fitted fixture with de Casteljau subdivision, then
 // measure the ring's shortest distance to that boundary (not its own normals).
 function boundaryPoints(commands) {
   const points = [];

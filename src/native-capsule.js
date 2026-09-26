@@ -1,8 +1,8 @@
 import { profile } from './profile.js';
 
-// Adapt a measured wide-capsule path without stretching its ends horizontally.
+// Adapt a native-render-fitted wide-capsule path without stretching its ends horizontally.
 // Radius scales with height; right-hand points remain anchored to the right.
-// Verified against the native samples. Narrow/circular regimes are out of scope.
+// Approximate native paint, not exported native commands. Narrow/circular regimes are out of scope.
 export function appleCapsuleCommands(width, height) {
   if (!(Number.isFinite(width) && Number.isFinite(height) && height > 0 && width / height >= 1.6)) {
     throw new RangeError('The measured capsule profile requires width / height >= 1.6');

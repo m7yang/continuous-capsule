@@ -2,7 +2,7 @@ import { rectanglePathGeometry } from './native-rectangle.js';
 import { appleCapsulePath } from './native-capsule.js';
 import { offsetFocusPath } from './focus-offset.js';
 
-export const profileId = 'swiftui-macos-27.0-26A428';
+export const profileId = 'swiftui-macos-27.0-26A428-render-fit-v1';
 
 /**
  * Return paths in CSS pixels, or null when a CSS fallback is needed.

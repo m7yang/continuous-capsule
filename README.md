@@ -1,6 +1,6 @@
 # Continuous capsule
 
-Dependency-free ESM geometry for a measured SwiftUI continuous capsule, usable
+Dependency-free ESM geometry fitted to a SwiftUI continuous capsule render, usable
 in browsers and Node without React or a DOM. The package retains the name
 `@fleet/continuous-capsule` for existing consumers. It is private and unpublished.
 
@@ -43,8 +43,9 @@ pnpm benchmark
 
 The benchmark compares full and surface-only public calls at changing fractional
 widths. It reports the median of five runs after warmup; it measures geometry
-computation, not browser layout or painting. The tests retain independent native
-fixtures and verify offsets and identical surface-only output.
+computation, not browser layout or painting. The tests retain the frozen fit and independent native rectangle fixtures, and
+verify offsets and identical surface-only output. Original capsule exports remain
+as historical evidence; fitted capsules intentionally differ from those commands.
 
 ## Profile and provenance
 
@@ -57,7 +58,10 @@ Future changes for this standalone package belong here. The Fleet source is
 retained in its original checkout; this extraction does not migrate other Fleet
 consumers. Subvocab's original demo is historical provenance, not a dependency.
 
-The retained profile is `swiftui-macos-27.0-26A428`, measured on 2026-09-24.
+Version 0.3.0 adopts `swiftui-macos-27.0-26A428-render-fit-v1`, calibrated on
+2026-09-26 against one 332×150 native filled capsule at 16×. The original
+2026-09-24 exported-command fixtures are retained unchanged. Rectangles still
+use their original exported-command generator.
 The [research record](docs/research.md) describes evidence and limits. The
 calculated focus offset and consumer material are not verified native UI matches.
 
@@ -69,10 +73,14 @@ swift scripts/export-native.swift > /tmp/apple-capsules-candidate.json
 swift scripts/export-native.swift --compact > /tmp/apple-compact-capsules-candidate.json
 ```
 
-Compare candidates with `tests/fixtures/` before adopting them. Intentional
-profile updates replace the fixtures, run `pnpm generate:profile`, update
-`profileId` in JavaScript/declarations and its test, and rerun tests. Record the
-OS/build, research, and package version when the adopted shape changes.
+Compare candidates with `tests/fixtures/` before adopting them. Native command
+equality does not establish equality with native rendered silhouettes. For the
+current capsule fit, `pnpm generate:profile` expands the frozen quarter curves in
+`tests/fixtures/capsule-fit-profile.json`; it does not refit or overwrite native
+exports. The [research record](docs/research.md#native-render-fit--2026-09-26)
+contains fitting and native-render reproduction commands. Intentional future
+profile changes must update provenance, `profileId` in JavaScript/declarations
+and its test, and the package version, then rerun geometry and consumer checks.
 
 ## Consume from another repository
 
@@ -91,10 +99,23 @@ SwiftUI continuous rounded-rectangle geometry. It shares the capsule border,
 focus, surface-only options and return shape, but supports all positive aspect
 ratios. Radius is measured on the inset stroke centerline and clamps to half its
 shortest dimension. Zero radius produces a rectangle with a square focus ring
-that preserves the requested clear gap at its sides and corners. Existing capsule
-output is unchanged. Curved focus rings use an approximate parallel offset;
+that preserves the requested clear gap at its sides and corners. The 0.2.0 release left capsule
+output unchanged; 0.3.0 adopts the render fit described above. Curved focus rings use an approximate parallel offset;
 neither focus treatment is an exported native focus effect.
 
 The generator matches 561 independent native holdouts within 0.0002 CSS pixels
 per control point on macOS 27.0 build 26A428. This pins one SwiftUI profile;
 it does not promise every Apple control or future OS has this contour.
+
+## Native-render fit (0.3.0)
+
+All eight held-out sizes improve in 16× native captures; seven improve at 2×.
+The 300×26.25 reference improves from 0.0521px to 0.0125px at 16×. The 180×24
+case worsens from 0.0906px to 0.1082px at 2×. These are sampled raster-boundary
+support errors in SwiftUI, not browser-pixel guarantees or universal bounds.
+The fit has aligned segment tangents (G1), not proven continuous curvature (G2).
+The API, aspect-ratio limit, border inset, and focus-offset algorithm are unchanged.
+
+The generated profile subdivides each fitted cubic exactly in half (24 runtime
+cubics) for consistent CSS/SVG paint at fractional positions. This changes the
+representation, not the fitted curve; no subdivision runs in the browser.

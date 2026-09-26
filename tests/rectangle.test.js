@@ -39,7 +39,7 @@ test('zero-radius focus rings preserve clearance at every corner and side', () =
 test('continuous rectangles match independent native holdouts and validate public inputs', () => {
   const fixture = JSON.parse(readFileSync(new URL('./fixtures/apple-rectangles.json', import.meta.url)));
   assert.equal(fixture.os, 'Version 27.0 (Build 26A428)');
-  assert.equal(profileId, 'swiftui-macos-27.0-26A428');
+  assert.equal(profileId, 'swiftui-macos-27.0-26A428-render-fit-v1');
   assert.equal(fixture.samples.length, 561);
   for (const sample of fixture.samples) {
     const actual = rectanglePathGeometry(sample);
