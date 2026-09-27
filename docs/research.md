@@ -6,6 +6,18 @@ experiment; reproducing the geometry checks requires only this package.
 
 Checked 2026-09-24. This note separates Apple's documented APIs, observable output, and independent approximations. The supplied screenshots do not establish which Apple framework or shape generated their outlines.
 
+## Extraction history
+
+Extracted from Fleet commit `32138d9e2e21568eb930efb2ea79c5dc07904c39`, directory
+`agent-tools/packages/continuous-capsule`. The extracted runtime source matches
+Tab Out's original 0.1.0 tarball from Fleet commit
+`dfa5cab9e1e3487d0880150a8c7ed9e3f3c56edf`. Version 0.1.1 added surface-only
+calculation while preserving the measured profile and full default output.
+Future changes for this standalone package belong here. The extraction left
+the original Fleet checkout and its consumers in place. Subvocab's original
+demo is historical provenance, not a dependency. These commits identify the
+original source snapshots; neither checkout is needed to use or test this package.
+
 ## What Apple documents
 
 - `Capsule` is equivalent to a rounded rectangle whose radius is half its shortest dimension. Its initializer defaults to `.continuous`. Apple describes that style in terms of continuous curvature, but the documentation does not publish control-point coefficients. [Capsule](https://developer.apple.com/documentation/swiftui/capsule), [initializer](<https://developer.apple.com/documentation/swiftui/capsule/init(style:)>), [continuous style](https://developer.apple.com/documentation/swiftui/roundedcornerstyle/continuous)
@@ -26,26 +38,28 @@ C 0 12.29999989271164 0 14.399999678134918 0 15
 
 These are observed framework output, not fitted coefficients. This provides a stronger reference than an independently tuned squircle. It does not establish that the screenshot's specific native control uses the same path. The retained exporter is `scripts/export-native.swift`; exported fixtures are `tests/fixtures/apple-capsules.json`.
 
-The web adapter scales coordinates with height and anchors each end to its corresponding side, preserving the straight center. It was compared against nine independent native exports (including 214×30, 76×38, 160×48, and their border insets). Maximum control-point discrepancy was approximately `3.55e-15` pixels, before SVG serialization to nine decimal places. All nine native continuous-capsule paths matched the half-height continuous rounded rectangle. Run `node --test tests/*.test.js` to repeat this comparison. The adapter intentionally rejects aspect ratios below 1.6, outside the demonstrated wide-capsule use case; do not stretch this profile into circles or narrow rectangles.
+The original web adapter scaled coordinates with height and anchored each end to its corresponding side, preserving the straight center. It was compared against nine independent native exports (including 214×30, 76×38, 160×48, and their border insets). Maximum control-point discrepancy was approximately `3.55e-15` pixels, before SVG serialization to nine decimal places. All nine native continuous-capsule paths matched the half-height continuous rounded rectangle. These are historical command comparisons; current tests verify the frozen fitted prototype described in the [native-render fit procedure](#native-render-fit--2026-09-26). The supported aspect-ratio minimum remains 1.6.
 
 Each cubic is calculated as `B(t) = (1−t)^3 P0 + 3(1−t)^2 t P1 + 3(1−t)t^2 P2 + t^3 P3`, for `0 ≤ t ≤ 1`. The SVG `C` command takes P1, P2, P3; P0 is the previous segment's endpoint. The browser performs that calculation directly from the measured control points. The highlighted joins in the demo separate shoulder, middle, and tip segments; they are segments of a single boundary, not stacked filled outlines.
 
-### Compact-badge investigation
+### Compact-badge investigation (original profile)
 
 The reported “3 closed” badge was reproduced at 60.703125 × 22 CSS pixels
-with no border. A fresh native export on macOS 27.0, build 26A428, matches
-Fleet's control points at this size within `1.78e-15` pixels. Nine additional
+with no border. A fresh native export on macOS 27.0, build 26A428, matched
+Fleet's original control points at this size within `1.78e-15` pixels. Nine additional
 compact samples cover the 1 px border inset, heights from 16 to 24, and aspect
-ratios down to the supported 1.6 boundary. All match the retained profile and
+ratios down to the supported 1.6 boundary. All matched the original profile and
 the half-height continuous rounded rectangle.
 
 These independent exports live in `tests/fixtures/apple-compact-capsules.json`.
-Reproduce them with `swift scripts/export-native.swift --compact`; the geometry
-tests compare both the internal coordinates and the public serialized surface,
-and check focus offsets against the native boundaries. The runtime profile is
-still generated only from the original fixture.
+Re-export candidates with `swift scripts/export-native.swift --compact` on the
+recorded OS. At the time, tests compared internal coordinates, serialized surfaces,
+and focus clearance against native exports, and the generator used the original
+fixture. Current generation uses `capsule-fit-profile.json`; capsule tests compare
+curves and focus clearance against the frozen fitted prototype. See the
+[native-render fit procedure](#native-render-fit--2026-09-26) for current reproduction commands.
 
-This rules out a size-dependent geometry error for these inputs. The native
+Those comparisons ruled out a size-dependent command mismatch for the original profile at these sizes. The native
 continuous contour itself has flat top/bottom runs and shallow shoulders; their
 appearance alone does not establish clipping. Native path agreement does not
 rule out clipping or rasterization differences in a consumer. Preserve the

@@ -1,11 +1,11 @@
 # Continuous capsule
 
-Dependency-free ESM geometry fitted to a SwiftUI continuous capsule render, usable
-in browsers and Node without React or a DOM. The package retains the name
-`@fleet/continuous-capsule` for existing consumers. It is private and unpublished.
+Dependency-free ESM geometry for continuous capsules and rounded rectangles,
+usable in browsers and Node without React or a DOM. Capsule geometry is fitted
+to a SwiftUI native render. The package is not yet published to npm.
 
 ```js
-import { createCapsuleGeometry } from '@fleet/continuous-capsule';
+import { createCapsuleGeometry } from 'continuous-capsule';
 
 const full = createCapsuleGeometry({ width: 214, height: 30 });
 // { surfacePath, focusPath, inset } or null
@@ -49,14 +49,8 @@ as historical evidence; fitted capsules intentionally differ from those commands
 
 ## Profile and provenance
 
-Extracted from Fleet commit `32138d9e2e21568eb930efb2ea79c5dc07904c39`, directory
-`agent-tools/packages/continuous-capsule`. The extracted runtime source matches
-Tab Out's original 0.1.0 tarball from Fleet commit
-`dfa5cab9e1e3487d0880150a8c7ed9e3f3c56edf`. Version 0.1.1 adds surface-only
-calculation; the measured profile and full default output remain unchanged.
-Future changes for this standalone package belong here. The Fleet source is
-retained in its original checkout; this extraction does not migrate other Fleet
-consumers. Subvocab's original demo is historical provenance, not a dependency.
+This repository maintains the geometry, native fixtures, and profile generators.
+The [extraction history](docs/research.md#extraction-history) records the package's origins.
 
 Version 0.3.0 adopts `swiftui-macos-27.0-26A428-render-fit-v1`, calibrated on
 2026-09-26 against one 332×150 native filled capsule at 16×. The original

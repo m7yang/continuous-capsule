@@ -11,13 +11,14 @@ it to another framework, or implementing its focus ring. Consumer design systems
 2. **Install the core.** Follow the package's
    [consumption instructions](../README.md#consume-from-another-repository).
    Use a pinned artifact, or a local path during development. Record the package
-   version and Fleet revision; run the package's
+   version and this repository's commit; run the package's
    [geometry checks](../README.md#development).
 3. **Add the adapter.** Use the [rendering rules](#layout-and-rendering) below.
    For React, read the [React adapter reference](continuous-capsules-react.md);
    other frameworks use the same core with their own lifecycle and rendering.
-   This step is complete when the selected control paints its surface and focus
-   path, updates for its actual dimensions, and retains a usable CSS fallback.
+   This step is complete when the selected control paints its surface, provides
+   the required focus treatment (native outline or generated path) when focusable,
+   updates for its actual dimensions, and retains a usable CSS fallback.
 4. **Verify the consumer.** Check keyboard focus, disabled state, grouped
    controls, resizing, overflow, supported themes (including forced colors), and
    server hydration where applicable. Run the native fixture and offset checks
@@ -31,9 +32,8 @@ passes the applicable checks, and remains usable when geometry is unavailable.
 ## Ownership and API
 
 This repository owns the [canonical package](../README.md),
-native fixtures, exporter, tests, and research. Import `@fleet/continuous-capsule`
+native fixtures, exporter, tests, and research. Import `continuous-capsule`
 and maintain geometry changes here; adapters and themes remain app-owned.
-The original Subvocab demo is historical provenance, not a dependency.
 
 Use the [public declarations](../src/index.d.ts)
 for the API and the [implementation](../src/index.js)

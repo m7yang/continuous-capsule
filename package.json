@@ -1,8 +1,12 @@
 {
-  "name": "@fleet/continuous-capsule",
+  "name": "continuous-capsule",
   "version": "0.3.0",
-  "private": true,
-  "license": "UNLICENSED",
+  "description": "Dependency-free geometry for SwiftUI-style continuous capsules and rounded rectangles.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m7yang/continuous-capsule.git"
+  },
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "exports": {

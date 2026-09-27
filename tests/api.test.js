@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
-import { createCapsuleGeometry, profileId } from '@fleet/continuous-capsule';
+import { createCapsuleGeometry, profileId } from 'continuous-capsule';
 import { profile } from '../src/profile.js';
 
 test('runtime profile identifies the frozen native-render fit', () => {

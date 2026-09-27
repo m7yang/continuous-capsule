@@ -12,7 +12,7 @@ an app-owned adapter; the package itself has no React dependency:
 
 ```tsx
 import { useMemo, type ComponentPropsWithoutRef } from "react";
-import { createCapsuleGeometry } from "@fleet/continuous-capsule";
+import { createCapsuleGeometry } from "continuous-capsule";
 
 type Props = ComponentPropsWithoutRef<"button"> & {
   width: number;
@@ -100,8 +100,8 @@ For a client-measured React component, initially render the ordinary CSS capsule
 on both server and client. Attach the observer in an effect and enable SVG after
 a valid measurement. Effects run only on the client and require cleanup;
 see [React useEffect](https://react.dev/reference/react/useEffect). Known explicit
-dimensions can generate deterministic SVG during server rendering. In Subvocab's
-Next.js app, place hook-based adapters behind the appropriate client boundary.
+dimensions can generate deterministic SVG during server rendering. In Next.js,
+place hook-based adapters behind the appropriate client boundary.
 
 Simple solid fills need no IDs. If adding gradients, masks, or clip paths, give
 each instance unique IDs; React's [useId](https://react.dev/reference/react/useId)
