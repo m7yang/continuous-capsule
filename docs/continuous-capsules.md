@@ -10,7 +10,7 @@ it to another framework, or implementing its focus ring. Consumer design systems
    those constraints recorded; preserve the control's semantics and behavior.
 2. **Install the core.** Follow the package's
    [consumption instructions](../README.md#consume-from-another-repository).
-   Use a pinned artifact, or a local path during development. Record the package
+   Use a pinned release, or a local path during development. Record the package
    version and this repository's commit; run the package's
    [geometry checks](../README.md#development).
 3. **Add the adapter.** Use the [rendering rules](#layout-and-rendering) below.
@@ -67,6 +67,10 @@ disconnect on unmount. Observe the control rather than its decorative SVG;
 geometry updates must not change the measured layout. For server rendering,
 use known dimensions or render the same CSS fallback until client measurement.
 
+Do not widen short labels to satisfy the capsule's 1.6 aspect-ratio minimum.
+Use the README's [narrow fallback](../README.md#continuous-capsule): the
+half-height continuous rectangle at the control's natural size.
+
 Memoize by dimensions, profile, and geometric tokens. Keep shared caches bounded;
 text, color, and hover changes require new geometry only if they change dimensions.
 
@@ -75,6 +79,17 @@ text, color, and hover changes require new geometry only if they change dimensio
 The focus gap means clear distance between the painted border and painted ring,
 not between their path centerlines. Use the returned focus path with a single
 stroke. Subtracting independently resized capsules can produce an uneven band.
+
+The returned focus path is offset from the unmodified surface. If the adapter
+changes the surface contour, for example with an optical shoulder adjustment,
+derive the ring from the painted path instead. With border width `b`, gap `g`,
+and ring width `w`, stroke the surface path at `b + 2g + 2w` and mask out the
+filled surface plus a `b + 2g` stroke of the same path. Stroke widths offset
+every point by the same distance, so the ring stays exactly `g` clear of the
+border. Give the mask `maskUnits="userSpaceOnUse"` and a region extending
+`b / 2 + g + w` beyond the inset path on every side; the default 10% margin
+clips short controls.
+
 Keep the ordinary CSS capsule and focus outline when geometry is unavailable;
 suppress the native outline only while its replacement is available.
 

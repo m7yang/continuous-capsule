@@ -2,7 +2,11 @@
 
 Dependency-free ESM geometry for continuous capsules and rounded rectangles,
 usable in browsers and Node without React or a DOM. Capsule geometry is fitted
-to a SwiftUI native render. The package is not yet published to npm.
+to a SwiftUI native render.
+
+```sh
+npm install continuous-capsule
+```
 
 ```js
 import { createCapsuleGeometry } from 'continuous-capsule';
@@ -22,8 +26,26 @@ equal to the actual control size; stretching it distorts the ends.
 Finite positive dimensions are required; the inset path's width/height ratio
 must be at least 1.6. Border width and gap may be zero; focus width must be
 positive. Both modes validate all geometric options identically, including
-unused focus options, and return null for unsupported sizes. Consumers retain a
-CSS capsule and native focus outline when geometry is unavailable.
+unused focus options, and return null for unsupported sizes.
+
+For narrower content-sized controls, keep their natural width rather than
+padding them to 1.6. SwiftUI defines `Capsule` as the continuous rounded
+rectangle with half its shortest dimension as radius, and the
+[rectangle generator](#continuous-rectangles-020) matches 131 native exports in
+exactly that narrow, half-height regime:
+
+```js
+import { createCapsuleGeometry, createContinuousRectangleGeometry } from 'continuous-capsule';
+
+const options = { width, height, borderWidth: 1 };
+const geometry = createCapsuleGeometry(options)
+  ?? createContinuousRectangleGeometry({ ...options, radius: Math.min(width, height) / 2 });
+```
+
+That fallback reproduces native exported commands, not the 0.3.0 render fit, so
+the contour shifts by 0.13–0.17 CSS px where a 24–30.6px control crosses the
+1.6 boundary. Consumers retain a CSS capsule and native focus outline only when
+neither function returns geometry, such as hidden or unmeasured controls.
 
 The [integration guide](docs/continuous-capsules.md) covers rendering and
 verification, with a [React example](docs/continuous-capsules-react.md).
@@ -78,13 +100,29 @@ and its test, and the package version, then rerun geometry and consumer checks.
 
 ## Consume from another repository
 
-For development, add this checkout by absolute path with pnpm. For a portable
-pinned dependency, run `pnpm pack` here and retain the resulting tarball in the
-consumer's artifact storage. Install it with `pnpm add ./path/to/package.tgz`.
-Record its version, source provenance, and checksum in the consumer.
+Install a pinned release with `pnpm add --save-exact continuous-capsule@0.3.0`.
+The consumer's lockfile records the registry integrity; no vendored artifact is needed.
 
-The tarball includes runtime source, declarations, and documentation. Native
+For development, add this checkout by absolute path with pnpm. To try an
+unreleased change elsewhere, run `pnpm pack` here and install the tarball with
+`pnpm add ./path/to/package.tgz`; switch back to a published release before
+the consumer ships.
+
+The package includes runtime source, declarations, and documentation. Native
 fixtures and the Swift exporter stay in this repository for maintenance.
+
+## Publish to npm
+
+From this checkout, sign in to the publishing account and publish:
+
+```sh
+npm login
+npm pack --dry-run
+npm publish --access public
+```
+
+Publishing runs the tests first. For later releases, update the package version
+before publishing; npm does not allow replacing an existing version.
 
 ## Continuous rectangles (0.2.0)
 
